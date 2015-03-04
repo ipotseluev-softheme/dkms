@@ -19,7 +19,7 @@ BASHDIR = $(DESTDIR)/etc/bash_completion.d
 KCONF = $(DESTDIR)/etc/kernel
 SHAREDIR = $(DESTDIR)/usr/share
 DOCDIR = $(SHAREDIR)/doc/dkms
-SYSTEMD = $(DESTDIR)/etc/systemd/system
+SYSTEMD = $(DESTDIR)/usr/lib/systemd/system
 
 #Define the top-level build directory
 BUILDDIR := $(shell pwd)
@@ -67,12 +67,14 @@ install-redhat-sysv: install doc-perms
 
 install-redhat-systemd: install doc-perms
 	mkdir -m 0755 -p  $(SYSTEMD)
+	mkdir -m 0755 -p  $(INITD)
 	install -p -m 0755 dkms_mkkerneldoth $(LIBDIR)/mkkerneldoth
 	install -p -m 0755 dkms_find-provides $(LIBDIR)/find-provides
 	install -p -m 0755 lsb_release $(LIBDIR)/lsb_release
 	install -p -m 0644 template-dkms-mkrpm.spec $(ETC)
 	install -p -m 0644 template-dkms-redhat-kmod.spec $(ETC)
 	install -p -m 0644 dkms.service $(SYSTEMD)
+	install -p -m 0755 dkms_autoinstaller $(INITD)
 
 install-doc:
 	mkdir -m 0755 -p $(DOCDIR)
