@@ -17,7 +17,7 @@ Group: System Environment/Base
 BuildArch: noarch
 URL: http://linux.dell.com/dkms
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Source0: https://github.com/rfortunatov-softheme/dkms/releases/download/2.2.1.0/dkms-2.2.1.0.tar.gz
+Source0: https://github.com/rfortunatov-softheme/dkms/releases/download/rpms-fixup/dkms-2.2.1.0.tar.gz
 # because Mandriva calls this package dkms-minimal
 Provides: dkms-minimal = %{version}
 
