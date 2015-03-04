@@ -25,7 +25,6 @@ Requires: coreutils
 Requires: cpio
 Requires: findutils
 Requires: gawk
-Requires: kernel-devel
 Requires: gcc
 Requires: grep
 Requires: gzip
