@@ -134,7 +134,7 @@ debmagic: $(TARBALL)
 	cp -ar debian $(DEB_TMP_BUILDDIR)/$(RELEASE_STRING)/debian
 	chmod +x $(DEB_TMP_BUILDDIR)/$(RELEASE_STRING)/debian/rules
 	cd $(DEB_TMP_BUILDDIR)/$(RELEASE_STRING) ; \
-	dch -v $(RELEASE_VERSION)-0 "New upstream version, $(RELEASE_VERSION)"; \
+	dch -v $(RELEASE_VERSION) "New upstream version, $(RELEASE_VERSION)"; \
 	dpkg-buildpackage -D -b -rfakeroot ; \
 	dpkg-buildpackage -D -S -sa -rfakeroot ; \
 	mv ../$(RELEASE_NAME)_* $(TOPDIR)/dist/ ; \
