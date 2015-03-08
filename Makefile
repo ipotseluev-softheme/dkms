@@ -1,10 +1,8 @@
 RELEASE_DATE := "22-September-2014"
-RELEASE_MAJOR := 2
-RELEASE_MINOR := 2
-RELEASE_SUBLEVEL := 1
-RELEASE_EXTRALEVEL := .0
+VERSION := 2.2.1
+RELEASE := 0
 RELEASE_NAME := dkms
-RELEASE_VERSION := $(RELEASE_MAJOR).$(RELEASE_MINOR).$(RELEASE_SUBLEVEL)$(RELEASE_EXTRALEVEL)
+RELEASE_VERSION := $(VERSION).$(RELEASE)
 RELEASE_STRING := $(RELEASE_NAME)-$(RELEASE_VERSION)
 DIST := unstable
 SHELL=bash
@@ -120,7 +118,9 @@ rpm: $(TARBALL) dkms.spec
 	tmp_dir=`mktemp -d --tmpdir dkms.XXXXXXXX` ; \
 	mkdir -p $${tmp_dir}/{BUILD,RPMS,SRPMS,SPECS,SOURCES} ; \
 	cp $(TARBALL) $${tmp_dir}/SOURCES ; \
-	sed "s/\[INSERT_VERSION_HERE\]/$(RELEASE_VERSION)/" dkms.spec > $${tmp_dir}/SPECS/dkms.spec ; \
+	sed "s/\[INSERT_VERSION_HERE\]/$(RELEASE_VERSION)/" dkms.spec > $${tmp_dir}/SPECS/dkms.spec.new ; \
+	sed "s/\[INSERT_NAME_HERE\]/$(RELEASE_NAME)/" $${tmp_dir}/SPECS/dkms.spec.new > $${tmp_dir}/SPECS/dkms.spec ; \
+	rm -f $${tmp_dir}/SPECS/dkms.spec.new ; \
 	pushd $${tmp_dir} > /dev/null 2>&1; \
 	rpmbuild -ba --define "_topdir $${tmp_dir}" SPECS/dkms.spec ; \
 	popd > /dev/null 2>&1; \

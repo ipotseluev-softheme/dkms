@@ -9,7 +9,7 @@
 %endif
 
 Summary: Dynamic Kernel Module Support Framework
-Name: dkms
+Name: [INSERT_NAME_HERE]
 Version: [INSERT_VERSION_HERE]
 Release: %{_package_name_prefix}
 License: GPLv2+
@@ -17,9 +17,10 @@ Group: System Environment/Base
 BuildArch: noarch
 URL: http://linux.dell.com/dkms
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Source0: dists/dkms-2.2.1.0.tar.gz
+Source0: dists/%{name}-%{version}.tar.gz
 # because Mandriva calls this package dkms-minimal
 Provides: dkms-minimal = %{version}
+Provides: dkms-appassure = %{version}
 
 Requires: coreutils
 Requires: cpio
