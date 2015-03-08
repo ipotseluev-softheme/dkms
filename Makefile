@@ -22,13 +22,15 @@ SYSTEMD = $(DESTDIR)/usr/lib/systemd/system
 #Define the top-level build directory
 BUILDDIR := $(shell pwd)
 TOPDIR := $(shell pwd)
+BUILD_DIR := $(TOPDIR)/../build
+ARTIFACTS_DIR := $(TOPDIR)../artifacts
 
 .PHONY = tarball
 
 all: clean tarball rpm debs
 
 clean:
-	-rm -rf *~ dist/ dkms-freshmeat.txt
+	-rm -rf *~ dist/ dkms-freshmeat.txt $(BUILD_DIR)
 
 install:
 	mkdir -m 0755 -p $(VAR) $(SBIN) $(MAN) $(ETC) $(BASHDIR) $(SHAREDIR) $(LIBDIR)
@@ -116,7 +118,7 @@ $(TARBALL):
 
 
 rpm: $(TARBALL) dkms.spec
-	tmp_dir="$(TOPDIR)/../build" ; \
+	tmp_dir="$(BUILD_DIR)" ; \
 	mkdir -p $${tmp_dir} ; \
 	mkdir -p $${tmp_dir}/{BUILD,RPMS,SRPMS,SPECS,SOURCES} ; \
 	cp $(TARBALL) $${tmp_dir}/SOURCES ; \
@@ -126,21 +128,24 @@ rpm: $(TARBALL) dkms.spec
 	pushd $${tmp_dir} > /dev/null 2>&1; \
 	rpmbuild -ba --define "_topdir $${tmp_dir}" SPECS/dkms.spec ; \
 	popd > /dev/null 2>&1; \
-	artifacts_dir="$(TOPDIR)/../artifacts" ; \
-	mkdir -p $${artifacts_dir} ; \
-	cp $${tmp_dir}/RPMS/noarch/* $${tmp_dir}/SRPMS/* $${artifacts_dir}	
+	mkdir -p $(ARTIFACTS_DIR) ; \
+	cp $${tmp_dir}/RPMS/noarch/* $${tmp_dir}/SRPMS/* $(ARTIFACTS_DIR)	
 
 debmagic: $(TARBALL)
 	mkdir -p dist/
-	ln -s $(TARBALL) $(DEB_TMP_BUILDDIR)/$(RELEASE_NAME)_$(RELEASE_VERSION).orig.tar.gz
-	tar -C $(DEB_TMP_BUILDDIR) -xzf $(TARBALL)
-	cp -ar debian $(DEB_TMP_BUILDDIR)/$(RELEASE_STRING)/debian
-	chmod +x $(DEB_TMP_BUILDDIR)/$(RELEASE_STRING)/debian/rules
-	cd $(DEB_TMP_BUILDDIR)/$(RELEASE_STRING) ; \
+	mkdir -p $(BUILD_DIR) ; \
+	ln -s $(TARBALL) $(BUILD_DIR)/$(RELEASE_NAME)_$(RELEASE_VERSION).orig.tar.gz ; \
+	tar -C $(BUILD_DIR) -xzf $(TARBALL) ; \
+	cp -ar debian $(BUILD_DIR)/$(RELEASE_STRING)/debian ; \
+	chmod +x $(BUILD_DIR)/$(RELEASE_STRING)/debian/rules ; \
+	cd $(BUILD_DIR)/$(RELEASE_STRING) ; \
 	dch -v $(RELEASE_VERSION) "New upstream version, $(RELEASE_VERSION)"; \
 	dpkg-buildpackage -D -b -rfakeroot ; \
 	dpkg-buildpackage -D -S -sa -rfakeroot ; \
 	mv ../$(RELEASE_NAME)_* $(TOPDIR)/dist/ ; \
+	artifacts_dir="$(TOPDIR)/../artifacts" ; \
+        mkdir -p $(ARTIFACTS_DIR) ; \
+	cp $(TOPDIR)/dist/*.deb $(ARTIFACTS_DIR) ; \
 	cd -
 
 debs:
