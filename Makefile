@@ -98,7 +98,8 @@ tarball: $(TARBALL)
 
 $(TARBALL):
 	mkdir -p $(deb_destdir)
-	tmp_dir=`mktemp -d --tmpdir dkms.XXXXXXXX` ; \
+	tmp_dir="$(TOPDIR)/../archive" ; \
+	mkdir -p $${tmp_dir} ; \
 	cp -a ../$(RELEASE_NAME) $${tmp_dir}/$(RELEASE_STRING) ; \
 	sed -e "s/\[INSERT_VERSION_HERE\]/$(RELEASE_VERSION)/" dkms > $${tmp_dir}/$(RELEASE_STRING)/dkms ; \
 	sed -e "s/\[INSERT_VERSION_HERE\]/$(RELEASE_VERSION)/" dkms.spec > $${tmp_dir}/$(RELEASE_STRING)/dkms.spec ; \
@@ -115,7 +116,8 @@ $(TARBALL):
 
 
 rpm: $(TARBALL) dkms.spec
-	tmp_dir=`mktemp -d --tmpdir dkms.XXXXXXXX` ; \
+	tmp_dir="$(TOPDIR)/../build" ; \
+	mkdir -p $${tmp_dir} ; \
 	mkdir -p $${tmp_dir}/{BUILD,RPMS,SRPMS,SPECS,SOURCES} ; \
 	cp $(TARBALL) $${tmp_dir}/SOURCES ; \
 	sed "s/\[INSERT_VERSION_HERE\]/$(RELEASE_VERSION)/" dkms.spec > $${tmp_dir}/SPECS/dkms.spec.new ; \
@@ -124,8 +126,9 @@ rpm: $(TARBALL) dkms.spec
 	pushd $${tmp_dir} > /dev/null 2>&1; \
 	rpmbuild -ba --define "_topdir $${tmp_dir}" SPECS/dkms.spec ; \
 	popd > /dev/null 2>&1; \
-	cp $${tmp_dir}/RPMS/noarch/* $${tmp_dir}/SRPMS/* dist ; \
-	rm -rf $${tmp_dir}
+	artifacts_dir="$(TOPDIR)/../artifacts" ; \
+	mkdir -p $${artifacts_dir} ; \
+	cp $${tmp_dir}/RPMS/noarch/* $${tmp_dir}/SRPMS/* $${artifacts_dir}	
 
 debmagic: $(TARBALL)
 	mkdir -p dist/
